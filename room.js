@@ -97,7 +97,9 @@ class Room {
                 index = i;
             }
         };
-        this.members.splice(i, 1);
+        if (index != -1) {
+            this.members.splice(index, 1);
+        }
     }
 
     revokeAllMembers() {

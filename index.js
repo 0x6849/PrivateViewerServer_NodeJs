@@ -22,9 +22,13 @@ const actions = {
                 client.joinRoom(rooms[roomId]);
             } else {
                 client.warning("The specified room is unknown");
-                rooms[roomId] = new Room(roomId);
-                client.ok("Room " + roomId + " was created");
-                client.joinRoom(rooms[roomId]);
+                const roomId = actions["createRoom"](client, request);
+                if (roomId) {
+                    client.joinRoom(rooms[roomId]);
+                    client.ok("Joined room " + roomId);
+                } else {
+                    client.error("Couldn't join room");
+                }
             }
         } else {
             client.error("No room specified");
@@ -43,19 +47,27 @@ const actions = {
             if (!rooms[roomId]) {
                 rooms[roomId] = new Room(roomId);
                 client.ok("Room " + roomId + " was created");
+                return roomId;
             } else {
                 client.error("The specified room id already exists");
+                return null;
             }
         } else {
             client.waring("No room id specified. Creating random...");
             var randomString = "";
             var tries = 0;
-            while (randomString != "" && !rooms[randomString] && tries < 200) {
+            while ((randomString != "" || rooms[randomString]) && tries < 200) {
                 randomString = btoa(Math.random()).substr(0, 11);
                 tries++;
             }
-            rooms[randomString] = new Room(randomString);
-            client.ok("Room " + randomString + " was created");
+            if (!rooms[randomString]) {
+                rooms[randomString] = new Room(randomString);
+                client.ok("Room " + randomString + " was created");
+                return randomString;
+            } else {
+                client.ok("No free random string was found. No room created");
+                return null;
+            }
         }
     },
     "listRooms": (client, request) => {
