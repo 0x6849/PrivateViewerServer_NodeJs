@@ -18,17 +18,7 @@ const actions = {
     "join": (client, request) => {
         if (request["roomID"]) {
             if (rooms[request["roomID"]]) {
-                if (client.room) {
-                    if (client.room.id == request["roomID"]) {
-                        client.warning("You are already in this room");
-                    } else {
-                        client.ok("Changed from room " + client.room.id + " to room " + request["roomID"]);
-                        client.joinRoom(rooms[request["roomID"]]);
-                    }
-                } else {
-                    client.ok("Entered room " + request["roomID"]);
-                    client.joinRoom(rooms[request["roomID"]]);
-                }
+                client.joinRoom(rooms[request["roomID"]]);
             } else {
                 client.error("The specified room is unknown");
             }
@@ -38,13 +28,7 @@ const actions = {
     },
     "leave": (client, request) => {
         if (client.room) {
-            if (rooms[client.room.id]) {
-                client.ok("You left the room " + client.room.id);
-                client.leaveRoom();
-            } else {
-                client.warning("The room you were in (" + client.room.id + ") doesn't exist. You left it anyways.");
-                client.leaveRoom();
-            }
+            client.leaveRoom();
         } else {
             client.error("You are in no room");
         }
@@ -98,6 +82,8 @@ wss.on('connection', function connection(ws) {
             const request = JSON.parse(message, (key, value) => {
                 if (typeof value != "string" && typeof value != "number" && typeof value != "boolean" && typeof value != "object") {
                     return null;
+                } else {
+                    return value;
                 }
             });
             if (request["name"]) {
