@@ -60,7 +60,8 @@ const actions = {
     "createRoom": (client, request) => {
         if (request["roomID"]) {
             if (!rooms[request["roomID"]]) {
-                ro
+                rooms[request["roomID"]] = new Room(request["roomID"]);
+                client.ok("Room " + request["roomID"] + " was created");
             } else {
                 client.error("The specified room id already exists");
             }
@@ -83,7 +84,7 @@ const actions = {
 };
 
 var clients = [];
-var rooms = [];
+var rooms = {};
 
 wss.on('connection', function connection(ws) {
     var client = new Client(ws);
