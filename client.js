@@ -1,3 +1,5 @@
+const settings = require("./settings");
+
 class Client {
 
     socket;
@@ -41,7 +43,9 @@ class Client {
             "result": "warning",
             "message": msg
         });
-        console.error("WARNING to " + this.name + ": " + msg);
+        if (settings.logLevel >= 10) {
+            console.error("WARNING to " + this.name + ": " + msg);
+        }
     }
 
     error(msg) {
@@ -49,7 +53,9 @@ class Client {
             "result": "error",
             "message": msg
         });
-        console.error("ERROR to " + this.name + ": " + msg);
+        if (settings.logLevel >= 10) {
+            console.error("ERROR to " + this.name + ": " + msg);
+        }
     }
 
     ok(msg) {
@@ -57,19 +63,25 @@ class Client {
             "result": "ok",
             "message": msg
         });
-        console.log("OK to " + this.name + ": " + msg);
+        if (settings.logLevel >= 10) {
+            console.log("OK to " + this.name + ": " + msg);
+        }
     }
 
     send(data) {
         this.checkOpen();
         const dataStr = JSON.stringify(data);
         this.socket.send(dataStr);
-        console.log("Sent " + dataStr + " to " + this.name);
+        if (settings.logLevel >= 10) {
+            console.log("Sent " + dataStr + " to " + this.name);
+        }
     }
 
     checkOpen() {
         if (this.socket.readyState != 1) {
-            console.log(this.name + " isn't open and has ready state " + this.socket.readyState);
+            if (settings.logLevel >= 10) {
+                console.log(this.name + " isn't open and has ready state " + this.socket.readyState);
+            }
             if (this.room) {
                 this.room.removeMember(this);
             }

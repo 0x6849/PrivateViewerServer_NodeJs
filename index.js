@@ -112,9 +112,10 @@ var rooms = {};
 wss.on('connection', function connection(ws) {
     var client = new Client(ws);
     clients.push(client);
-    console.log(ws.url + " connected");
     ws.on('message', function incoming(message) {
-        console.log("received: %s from %s", message, client.name);
+        if (settings.logLevel >= 9) {
+            console.log("received: %s from %s", message, client.name);
+        }
         try {
             const request = JSON.parse(message, (key, value) => {
                 if (typeof value != "string" && typeof value != "number" && typeof value != "boolean" && typeof value != "object") {
@@ -141,7 +142,9 @@ wss.on('connection', function connection(ws) {
             }
         } catch (e) {
             //console.error("Client %s is not able to send properly formatted JSON!", client.name);
-            console.error(e);
+            if (settings.logLevel >= 1) {
+                console.error(e);
+            }
             client.error("Error: " + e.message);
         }
     });
