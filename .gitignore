@@ -2,7 +2,7 @@
 settings.js
 
 # npm
-package_lock*
+package-lock*
 node_modules
 
 # Logs
