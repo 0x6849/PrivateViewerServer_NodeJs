@@ -27,12 +27,6 @@ class Room {
                 this.currentTime = newTime;
             }
         }
-        if (newState["playSpeed"] !== undefined) {
-            const newSpeed = parseFloat(newState["playSpeed"]);
-            if (isFinite(newSpeed) && newSpeed >= 0) {
-                this.speed = newSpeed;
-            }
-        }
         if (newState["jump"] !== undefined) {
             const jumpInterval = parseFloat(newState["jump"]);
             if (isFinite(jumpInterval) && jumpInterval >= -this.currentTime) {
@@ -44,6 +38,12 @@ class Room {
                 this.lastUpdated = new Date();
             } else {
                 this.updateTime();
+            }
+        }
+        if (newState["playSpeed"] !== undefined) {
+            const newSpeed = parseFloat(newState["playSpeed"]);
+            if (isFinite(newSpeed) && newSpeed >= 0) {
+                this.speed = newSpeed;
             }
         }
 
