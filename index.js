@@ -79,7 +79,7 @@ wss.on('connection', function connection(ws) {
             });
             if (request["action"]) {
                 if (actions[request["action"]]) {
-                    actions[request["action"]]();
+                    actions[request["action"]](client, request);
                 } else {
                     client.error("Unknown action " + request["action"]);
                 }
@@ -89,7 +89,7 @@ wss.on('connection', function connection(ws) {
         } catch (e) {
             console.error("Client %s is not able to send properly formatted JSON!", client.name);
             console.log(e);
-            client.error("Malformatted JSON");
+            client.error("Error: " + e.message);
         }
     });
 });
