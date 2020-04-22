@@ -1,0 +1,22 @@
+{
+  "name": "privateviewerserver_nodejs",
+  "version": "0.1.0",
+  "description": "A Server for the PrivateViewer video watching written in NodeJS with sockets",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0x6849/PrivateViewerServer_NodeJs.git"
+  },
+  "author": "0x6849",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/0x6849/PrivateViewerServer_NodeJs/issues"
+  },
+  "homepage": "https://github.com/0x6849/PrivateViewerServer_NodeJs#readme",
+  "dependencies": {
+    "ws": "^7.2.3"
+  }
+}
