@@ -86,7 +86,8 @@ wss.on('connection', function connection(ws) {
                 client.error("You have to specify the action you want to do");
             }
         } catch (e) {
-            console.error("Client %s is not able to send properly formatted JSON!");
+            console.error("Client %s is not able to send properly formatted JSON!", client.name);
+            console.log(e);
             client.error("Malformatted JSON");
         }
     });
