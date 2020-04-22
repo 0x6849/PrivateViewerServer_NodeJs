@@ -56,7 +56,7 @@ class Room {
 
     updateTime() {
         const currTime = new Date();
-        this.currentTime += ((currTime - this.lastUpdated) / 1000.0 / this.speed);
+        this.currentTime += ((currTime - this.lastUpdated) / 1000.0 * this.speed);
         this.lastUpdated = currTime;
     }
 
