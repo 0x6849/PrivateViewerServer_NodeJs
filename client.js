@@ -18,7 +18,7 @@ class Client {
                 this.room.removeMember(this);
                 this.ok("Changed from room " + this.room.id + " to room " + newRoom.id);
             } else {
-                this.ok("Entered room " + request["roomID"]);
+                this.ok("Entered room " + newRoom.id);
             }
             this.room = newRoom;
             this.room.addMember(this);
@@ -37,36 +37,33 @@ class Client {
     }
 
     warning(msg) {
-        this.checkOpen();
-        this.socket.send(JSON.stringify({
+        this.send({
             "result": "warning",
             "message": msg
-        }));
+        });
         console.error("WARNING to " + this.name + ": " + msg);
     }
 
     error(msg) {
-        this.checkOpen();
-        this.socket.send(JSON.stringify({
+        this.send({
             "result": "error",
             "message": msg
-        }));
+        });
         console.error("ERROR to " + this.name + ": " + msg);
     }
 
     ok(msg) {
-        this.checkOpen();
-        this.socket.send(JSON.stringify({
+        this.send({
             "result": "ok",
             "message": msg
-        }));
+        });
         console.log("OK to " + this.name + ": " + msg);
     }
 
     send(data) {
         this.checkOpen();
         this.socket.send(JSON.stringify(data));
-        console.log("Sent " + data + " to " + this.name);
+        //console.log("Sent " + data + " to " + this.name);
     }
 
     checkOpen() {

@@ -46,7 +46,10 @@ const actions = {
         }
     },
     "listRooms": (client, request) => {
-
+        client.send({
+            "result": "ok",
+            "rooms": Object.keys(rooms)
+        });
     },
     "removeRoom": (client, request) => {
         if (request["roomID"]) {
