@@ -21,6 +21,17 @@ class Room {
                 this.paused = newPaused;
             }
         }
+        if (!this.paused) {
+            if (changed) {
+                this.lastUpdated = new Date();
+            } else {
+                this.updateTime();
+            }
+        } else {
+            if (changed) {
+                this.updateTime();
+            }
+        }
         if (newState["timeStamp"] !== undefined) {
             const newTime = parseFloat(newState["timeStamp"]);
             if (isFinite(newTime) && newTime >= 0) {
@@ -31,17 +42,6 @@ class Room {
             const jumpInterval = parseFloat(newState["jump"]);
             if (isFinite(jumpInterval) && jumpInterval >= -this.currentTime) {
                 this.currentTime += jumpInterval;
-            }
-        }
-        if (!this.paused) {
-            if (changed) {
-                this.lastUpdated = new Date();
-            } else {
-                this.updateTime();
-            }
-        } else {
-            if (changed) {
-                this.updateTime();
             }
         }
         if (newState["playSpeed"] !== undefined) {
