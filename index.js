@@ -79,7 +79,7 @@ wss.on('connection', function connection(ws) {
             });
             if (request["action"]) {
                 if (actions[request["action"]]) {
-                    actions[request["action"]];
+                    actions[request["action"]]();
                 } else {
                     client.error("Unknown action " + request["action"]);
                 }
