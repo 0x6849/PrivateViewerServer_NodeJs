@@ -10,14 +10,64 @@ class Room {
         this.id = id;
     }
 
+    change(newState) {
+        const startTimer = false;
+        if (newState["paused"] !== undefined) {
+            const newPaused = newState["paused"];
+            if (newPaused === true || newPaused === false) {
+                if (newPaused === true && this.paused === false) {
+                    startTimer = true;
+                }
+                this.paused = newPaused;
+            }
+        }
+        if (newState["timeStamp"] !== undefined) {
+            const newTime = parseFloat(newState["timeStamp"]);
+            if (isFinite(newTime) && newTime >= 0) {
+                this.currentTime = newTime;
+            }
+        }
+        if (newState["playSpeed"] !== undefined) {
+            const newSpeed = parseFloat(newState["playSpeed"]);
+            if (isFinite(newSpeed) && newSpeed >= 0) {
+                this.speed = newSpeed;
+            }
+        }
+        if (newState["jump"] !== undefined) {
+            const jumpInterval = parseFloat(newState["jump"]);
+            if (isFinite(jumpInterval) && jumpInterval >= -this.currentTime) {
+                this.currentTime += jumpInterval;
+            }
+        }
+        if (!this.paused) {
+            if (startTimer) {
+                this.lastUpdated = new Date();
+            } else {
+                this.updateTime();
+            }
+        }
+
+        this.sendUpdateToAll();
+    }
+
+    updateTime() {
+        if (!this.paused) {
+            const currTime = new Date();
+            this.currentTime += ((currTime - this.lastUpdated) / 1000.0 / this.speed);
+            this.lastUpdated = currTime;
+        }
+    }
+
     sendUpdateToAll() {
         const self = this;
+        this.updateTime();
         this.members.forEach(client => {
-            self.sendUpdateTo(client);
+            self.sendUpdateTo(client, true);
         });
     }
 
-    sendUpdateTo(client) {
+    sendUpdateTo(client, multi) {
+        this.updateTime();
         client.send({
             "roomID": this.id,
             "paused": this.paused,

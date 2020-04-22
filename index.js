@@ -17,8 +17,9 @@ var wss = new websocket.Server({
 const actions = {
     "join": (client, request) => {
         if (request["roomID"]) {
-            if (rooms[request["roomID"]]) {
-                client.joinRoom(rooms[request["roomID"]]);
+            const roomId = request["roomID"].toString();
+            if (rooms[roomId]) {
+                client.joinRoom(rooms[roomId]);
             } else {
                 client.error("The specified room is unknown");
             }
@@ -35,9 +36,10 @@ const actions = {
     },
     "createRoom": (client, request) => {
         if (request["roomID"]) {
-            if (!rooms[request["roomID"]]) {
-                rooms[request["roomID"]] = new Room(request["roomID"]);
-                client.ok("Room " + request["roomID"] + " was created");
+            const roomId = request["roomID"].toString();
+            if (!rooms[roomId]) {
+                rooms[roomId] = new Room(roomId);
+                client.ok("Room " + roomId + " was created");
             } else {
                 client.error("The specified room id already exists");
             }
@@ -53,10 +55,11 @@ const actions = {
     },
     "removeRoom": (client, request) => {
         if (request["roomID"]) {
-            if (rooms[request["roomID"]]) {
-                rooms[request["roomID"]].removeAllMembers();
-                rooms[request["roomID"]] = undefined;
-                client.ok("Room " + request["roomID"] + " was created");
+            const roomId = request["roomID"].toString();
+            if (rooms[roomId]) {
+                rooms[roomId].removeAllMembers();
+                rooms[roomId] = undefined;
+                client.ok("Room " + roomId + " was created");
             } else {
                 client.error("The specified room doesn't exist");
             }
@@ -65,7 +68,11 @@ const actions = {
         }
     },
     "change": (client, request) => {
-
+        if (client.room) {
+            client.room.change(request);
+        } else {
+            client.error("You are in no room. Join a room to change a play state");
+        }
     },
     "getUpdate": (client, request) => {
         if (client.room) {
@@ -95,22 +102,23 @@ wss.on('connection', function connection(ws) {
             });
             if (request["name"]) {
                 if (client.name != request["name"]) {
-                    client.name = request["name"];
+                    client.name = request["name"].toString();
                     client.ok("Hello " + client.name);
                 }
             }
             if (request["action"]) {
-                if (actions[request["action"]]) {
-                    actions[request["action"]](client, request);
+                const action = request["action"].toString();
+                if (actions[action]) {
+                    actions[action](client, request);
                 } else {
-                    client.error("Unknown action " + request["action"]);
+                    client.error("Unknown action " + action);
                 }
             } else {
                 client.error("You have to specify the action you want to do");
             }
         } catch (e) {
-            console.error("Client %s is not able to send properly formatted JSON!", client.name);
-            console.log(e);
+            //console.error("Client %s is not able to send properly formatted JSON!", client.name);
+            console.error(e);
             client.error("Error: " + e.message);
         }
     });
