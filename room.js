@@ -55,23 +55,25 @@ class Room {
     }
 
     updateTime() {
-        if (!this.paused) {
-            const currTime = new Date();
-            this.currentTime += ((currTime - this.lastUpdated) / 1000.0 / this.speed);
-            this.lastUpdated = currTime;
-        }
+        const currTime = new Date();
+        this.currentTime += ((currTime - this.lastUpdated) / 1000.0 / this.speed);
+        this.lastUpdated = currTime;
     }
 
     sendUpdateToAll() {
         const self = this;
-        this.updateTime();
+        if (!this.paused) {
+            this.updateTime();
+        }
         this.members.forEach(client => {
             self.sendUpdateTo(client, true);
         });
     }
 
     sendUpdateTo(client, multi) {
-        this.updateTime();
+        if (!this.paused) {
+            this.updateTime();
+        }
         client.send({
             "roomID": this.id,
             "paused": this.paused,
