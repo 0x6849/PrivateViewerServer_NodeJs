@@ -62,8 +62,9 @@ class Client {
 
     send(data) {
         this.checkOpen();
-        this.socket.send(JSON.stringify(data));
-        //console.log("Sent " + data + " to " + this.name);
+        const dataStr = JSON.stringify(data);
+        this.socket.send(dataStr);
+        console.log("Sent " + dataStr + " to " + this.name);
     }
 
     checkOpen() {

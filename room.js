@@ -4,6 +4,7 @@ class Room {
     currentTime = 0.0;
     paused = true;
     speed = 1.0;
+    lastUpdated = 0;
 
     constructor(id) {
         this.id = id;

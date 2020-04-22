@@ -68,7 +68,11 @@ const actions = {
 
     },
     "getUpdate": (client, request) => {
-
+        if (client.room) {
+            client.room.sendUpdateTo(client);
+        } else {
+            client.error("You are in no room. Join a room to get an update");
+        }
     },
 };
 
