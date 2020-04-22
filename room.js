@@ -11,7 +11,7 @@ class Room {
     }
 
     change(newState) {
-        const startTimer = false;
+        var startTimer = false;
         if (newState["paused"] !== undefined) {
             const newPaused = newState["paused"];
             if (newPaused === true || newPaused === false) {
