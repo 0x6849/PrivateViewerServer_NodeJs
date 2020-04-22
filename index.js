@@ -17,21 +17,32 @@ const actions = {
         if (request["roomID"]) {
             if (rooms[request["roomID"]]) {
                 if (client.room == request["roomID"]) {
-                    client.ok()
+                    client.warning("You are already in this room");
+                    //TODO: Send update on join
                 } else if (!client.room) {
-
+                    client.room = request["roomID"];
+                    client.ok("Entered room " + client.room);
                 } else {
-
+                    client.ok("Changed from room " + client.room + " to room " + request["roomID"]);
+                    client.room = request["roomID"];
                 }
             } else {
                 client.error("The specified room is unknown");
+            }
+            if (request["name"]) {
+                client.name = request["name"];
+                client.ok("Hello " + client.name);
             }
         } else {
             client.error("No room specified");
         }
     },
     "leave": (client, request) => {
-
+        if (client.room == request["roomID"]) {
+            client.ok("You left the room " + client.room);
+        } else {
+            client.error("You are in no room");
+        }
     },
     "createRoom": (client, request) => {
 
@@ -59,7 +70,11 @@ wss.on('connection', function connection(ws) {
     ws.on('message', function incoming(message) {
         console.log("received: %s from %s", message, client.name);
         try {
-            const request = JSON.parse(message);
+            const request = JSON.parse(message, (key, value) => {
+                if (typeof value != "string" && typeof value != "number" && typeof value != "boolean") {
+                    return null;
+                }
+            });
             client
             if (request["action"]) {
                 if (actions[request["action"]]) {
