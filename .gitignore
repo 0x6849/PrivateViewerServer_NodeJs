@@ -5,6 +5,9 @@ settings.js
 package-lock*
 node_modules
 
+# Certificates
+*.pem
+
 # Logs
 logs
 *.log
