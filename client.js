@@ -16,7 +16,7 @@ class Client {
             "result": "warning",
             "message": msg
         }));
-        console.error("WARNING to" + this.name + ": " + msg);
+        console.error("WARNING to " + this.name + ": " + msg);
     }
 
     error(msg) {
@@ -25,7 +25,7 @@ class Client {
             "result": "error",
             "message": msg
         }));
-        console.error("ERROR to" + this.name + ": " + msg);
+        console.error("ERROR to " + this.name + ": " + msg);
     }
 
     ok(msg) {
@@ -34,7 +34,13 @@ class Client {
             "result": "ok",
             "message": msg
         }));
-        console.log("OK to" + this.name + ": " + msg);
+        console.log("OK to " + this.name + ": " + msg);
+    }
+
+    send(data) {
+        this.checkOpen();
+        this.socket.send(JSON.stringify(data));
+        console.log("Sent " + data + " to " + this.name);
     }
 
     checkOpen() {
