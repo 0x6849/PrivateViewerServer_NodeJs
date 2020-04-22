@@ -157,4 +157,10 @@ setInterval(() => {
     deleteIdx.forEach(i => {
         clients.splice(i, 1);
     });
+    for (const roomId in rooms) {
+        if (rooms.hasOwnProperty(roomId)) {
+            const room = rooms[roomId];
+            room.sendUpdateToAll();
+        }
+    }
 }, 1000);
