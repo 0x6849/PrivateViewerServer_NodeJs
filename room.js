@@ -22,7 +22,8 @@ class Room {
             "paused": this.paused,
             "timeStamp": this.currentTime,
             "playSpeed": this.speed,
-            "action": "change"
+            "action": "change",
+            "result": "ok"
         });
     }
 
@@ -46,6 +47,13 @@ class Room {
             }
         };
         this.members.splice(i, 1);
+    }
+
+    revokeAllMembers() {
+        this.members.forEach(client => {
+            client.room = null;
+        });
+        this.members = [];
     }
 }
 

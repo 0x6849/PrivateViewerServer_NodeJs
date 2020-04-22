@@ -18,26 +18,19 @@ const actions = {
     "join": (client, request) => {
         if (request["roomID"]) {
             if (rooms[request["roomID"]]) {
-                if (client.room == request["roomID"]) {
-                    client.warning("You are already in this room");
-                } else if (!client.room) {
-                    client.room = request["roomID"];
-                    client.ok("Entered room " + client.room);
-                    rooms[client.room].addMember(client);
-                    rooms[client.room].sendUpdateTo(client);
+                if (client.room) {
+                    if (client.room.id == request["roomID"]) {
+                        client.warning("You are already in this room");
+                    } else {
+                        client.ok("Changed from room " + client.room.id + " to room " + request["roomID"]);
+                        client.joinRoom(rooms[request["roomID"]]);
+                    }
                 } else {
-                    client.ok("Changed from room " + client.room + " to room " + request["roomID"]);
-                    rooms[client.room].removeMember(client);
-                    client.room = request["roomID"];
-                    rooms[client.room].addMember(client);
-                    rooms[request["roomID"]].sendUpdateTo(client);
+                    client.ok("Entered room " + request["roomID"]);
+                    client.joinRoom(rooms[request["roomID"]]);
                 }
             } else {
                 client.error("The specified room is unknown");
-            }
-            if (request["name"]) {
-                client.name = request["name"];
-                client.ok("Hello " + client.name);
             }
         } else {
             client.error("No room specified");
@@ -45,13 +38,12 @@ const actions = {
     },
     "leave": (client, request) => {
         if (client.room) {
-            if (rooms[client.room]) {
-                rooms[client.room].removeMember(client);
-                client.ok("You left the room " + client.room);
-                client.room = null;
+            if (rooms[client.room.id]) {
+                client.ok("You left the room " + client.room.id);
+                client.leaveRoom();
             } else {
-                client.warning("The room you were in (" + client.room + ") doesn't exist. You left it anyways.");
-                client.room = null;
+                client.warning("The room you were in (" + client.room.id + ") doesn't exist. You left it anyways.");
+                client.leaveRoom();
             }
         } else {
             client.error("You are in no room");
@@ -73,7 +65,17 @@ const actions = {
 
     },
     "removeRoom": (client, request) => {
-
+        if (request["roomID"]) {
+            if (rooms[request["roomID"]]) {
+                rooms[request["roomID"]].removeAllMembers();
+                rooms[request["roomID"]] = undefined;
+                client.ok("Room " + request["roomID"] + " was created");
+            } else {
+                client.error("The specified room doesn't exist");
+            }
+        } else {
+            client.error("No room to be deleted specified");
+        }
     },
     "change": (client, request) => {
 
@@ -94,12 +96,16 @@ wss.on('connection', function connection(ws) {
         console.log("received: %s from %s", message, client.name);
         try {
             const request = JSON.parse(message, (key, value) => {
-                if (typeof value != "string" && typeof value != "number" && typeof value != "boolean") {
-
+                if (typeof value != "string" && typeof value != "number" && typeof value != "boolean" && typeof value != "object") {
+                    return null;
                 }
-                console.log(typeof value);
-                return value;
             });
+            if (request["name"]) {
+                if (client.name != request["name"]) {
+                    client.name = request["name"];
+                    client.ok("Hello " + client.name);
+                }
+            }
             if (request["action"]) {
                 if (actions[request["action"]]) {
                     actions[request["action"]](client, request);

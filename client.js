@@ -10,6 +10,22 @@ class Client {
         this.room = null;
     }
 
+    joinRoom(newRoom) {
+        if (this.room) {
+            this.room.removeMember(this);
+        }
+        this.room = newRoom;
+        this.room.addMember(this);
+        this.room.sendUpdateTo(this);
+    }
+
+    leaveRoom() {
+        if (this.room) {
+            this.room.removeMember(this);
+        }
+        this.room = null;
+    }
+
     warning(msg) {
         this.checkOpen();
         this.socket.send(JSON.stringify({
