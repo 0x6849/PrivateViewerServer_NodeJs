@@ -72,10 +72,11 @@ wss.on('connection', function connection(ws) {
         try {
             const request = JSON.parse(message, (key, value) => {
                 if (typeof value != "string" && typeof value != "number" && typeof value != "boolean") {
-                    return null;
+
                 }
+                console.log(typeof value);
+                return value;
             });
-            client
             if (request["action"]) {
                 if (actions[request["action"]]) {
                     actions[request["action"]];
