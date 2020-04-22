@@ -11,12 +11,12 @@ class Room {
     }
 
     change(newState) {
-        var startTimer = false;
+        var changed = false;
         if (newState["paused"] !== undefined) {
             const newPaused = newState["paused"];
             if (newPaused === true || newPaused === false) {
-                if (newPaused === false && this.paused === true) {
-                    startTimer = true;
+                if (newPaused != this.paused) {
+                    changed = true;
                 }
                 this.paused = newPaused;
             }
@@ -34,9 +34,13 @@ class Room {
             }
         }
         if (!this.paused) {
-            if (startTimer) {
+            if (changed) {
                 this.lastUpdated = new Date();
             } else {
+                this.updateTime();
+            }
+        } else {
+            if (changed) {
                 this.updateTime();
             }
         }
