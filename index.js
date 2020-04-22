@@ -21,7 +21,10 @@ const actions = {
             if (rooms[roomId]) {
                 client.joinRoom(rooms[roomId]);
             } else {
-                client.error("The specified room is unknown");
+                client.warning("The specified room is unknown");
+                rooms[roomId] = new Room(roomId);
+                client.ok("Room " + roomId + " was created");
+                client.joinRoom(rooms[roomId]);
             }
         } else {
             client.error("No room specified");
@@ -45,6 +48,14 @@ const actions = {
             }
         } else {
             client.waring("No room id specified. Creating random...");
+            var randomString = "";
+            var tries = 0;
+            while (randomString != "" && !rooms[randomString] && tries < 200) {
+                randomString = btoa(Math.random()).substr(0, 11);
+                tries++;
+            }
+            rooms[randomString] = new Room(randomString);
+            client.ok("Room " + randomString + " was created");
         }
     },
     "listRooms": (client, request) => {
