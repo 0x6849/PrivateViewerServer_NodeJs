@@ -16,6 +16,7 @@ class Client {
             "result": "warning",
             "message": msg
         }));
+        console.error("WARNING to" + this.name + ": " + msg);
     }
 
     error(msg) {
@@ -24,6 +25,7 @@ class Client {
             "result": "error",
             "message": msg
         }));
+        console.error("ERROR to" + this.name + ": " + msg);
     }
 
     ok(msg) {
@@ -32,10 +34,12 @@ class Client {
             "result": "ok",
             "message": msg
         }));
+        console.log("OK to" + this.name + ": " + msg);
     }
 
     checkOpen() {
-        if (this.socket.readyState == 1) {
+        if (this.socket.readyState != 1) {
+            console.log(this.name + " has ready state " + this.socket.readyState);
             throw new Error("Socket is no longer open");
         }
     }
