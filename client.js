@@ -69,9 +69,11 @@ class Client {
 
     checkOpen() {
         if (this.socket.readyState != 1) {
-            console.log(this.name + " has ready state " + this.socket.readyState);
-            throw new Error("Socket is no longer open");
+            console.log(this.name + " isn't open and has ready state " + this.socket.readyState);
+            this.leaveRoom();
+            return false;
         }
+        return true;
     }
 }
 

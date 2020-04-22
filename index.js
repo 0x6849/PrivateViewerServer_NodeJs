@@ -123,3 +123,15 @@ wss.on('connection', function connection(ws) {
         }
     });
 });
+
+setInterval(() => {
+    var deleteIdx = []
+    for (var i = 0; i < clients.length; i++) {
+        if (!clients[i].checkOpen()) {
+            deleteIdx.push(i);
+        }
+    }
+    deleteIdx.forEach(i => {
+        clients.splice(i, 1);
+    });
+}, 1000);
