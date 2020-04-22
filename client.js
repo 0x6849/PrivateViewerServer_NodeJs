@@ -29,9 +29,9 @@ class Client {
     leaveRoom() {
         if (this.room) {
             this.room.removeMember(this);
-            client.ok("You left the room " + this.room.id);
+            this.ok("You left the room " + this.room.id);
         } else {
-            client.warning("You weren't in any room");
+            this.warning("You weren't in any room");
         }
         this.room = null;
     }
@@ -70,7 +70,10 @@ class Client {
     checkOpen() {
         if (this.socket.readyState != 1) {
             console.log(this.name + " isn't open and has ready state " + this.socket.readyState);
-            this.leaveRoom();
+            if (this.room) {
+                this.room.removeMember(this);
+            }
+            this.room = null;
             return false;
         }
         return true;
