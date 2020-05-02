@@ -5,7 +5,7 @@ const Client = require("./client");
 const Room = require("./room");
 const settings = require("./settings");
 
-const credentials = { key: fs.readFileSync('key.pem'), cert: fs.readFileSync('cert.pem') };
+const credentials = { key: fs.readFileSync(settings.privateKey), cert: fs.readFileSync(settings.certificate) };
 
 var httpsServer = https.createServer(credentials);
 httpsServer.listen(settings.port);
