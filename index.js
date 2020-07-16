@@ -192,8 +192,10 @@ function checkNetwork() {
         }
     }
     if (validConnection) {
+        console.log("Starting PrivateViewerServer...")
         setTimeout(main, 1000);
     } else {
+        console.log("No network found. Retrying in 1000ms");
         setTimeout(checkNetwork, 1000);
     }
 }
